@@ -23,6 +23,17 @@ public:
     // Returns samples whose name contains keyword as a substring.
     std::vector<Sample> SearchByName(const std::string& keyword) const;
 
+    // Finds the sample with the given id. Returns false (outSample untouched)
+    // when no such sample is registered.
+    bool FindById(const std::string& id, Sample& outSample) const;
+
+    // Increases/decreases stock for the sample with the given id. Returns
+    // false when no such sample is registered. DecreaseStock never takes
+    // stock below 0 (callers are expected to request at most the current
+    // stock, per docs/FEATURES/04-order-approval-rejection.md).
+    bool AddStock(const std::string& id, int quantity);
+    bool DecreaseStock(const std::string& id, int quantity);
+
 private:
     std::vector<Sample> samples_;
 };

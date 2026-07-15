@@ -155,16 +155,19 @@
     <ClCompile Include="FoundationGapTests.cpp" />
     <ClCompile Include="SampleRepositoryTest.cpp" />
     <ClCompile Include="OrderRepositoryTest.cpp" />
+    <ClCompile Include="OrderApprovalTest.cpp" />
     <ClCompile Include="..\Model\JsonValue.cpp" />
     <ClCompile Include="..\Model\JsonParser.cpp" />
     <ClCompile Include="..\Model\SaveManager.cpp" />
     <ClCompile Include="..\Model\SampleRepository.cpp" />
     <ClCompile Include="..\Model\OrderRepository.cpp" />
+    <ClCompile Include="..\Model\ProductionQueue.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="JsonTestTypes.h" />
     <ClInclude Include="SampleTestTypes.h" />
     <ClInclude Include="OrderTestTypes.h" />
+    <ClInclude Include="ProductionTestTypes.h" />
     <ClInclude Include="..\Model\JsonValue.h" />
     <ClInclude Include="..\Model\JsonParser.h" />
     <ClInclude Include="..\Model\SaveManager.h" />
@@ -173,6 +176,8 @@
     <ClInclude Include="..\Model\OrderStatus.h" />
     <ClInclude Include="..\Model\Order.h" />
     <ClInclude Include="..\Model\OrderRepository.h" />
+    <ClInclude Include="..\Model\ProductionJob.h" />
+    <ClInclude Include="..\Model\ProductionQueue.h" />
   </ItemGroup>
 
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

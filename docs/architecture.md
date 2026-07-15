@@ -128,16 +128,19 @@ CONFIRMED --(출고 처리)--------> RELEASE
 
 ```
 [OrderController.Approve(orderId)]
-    → OrderRepository.find(orderId)                      // RESERVED 검증
-    → SampleRepository.find(order.sampleId)               // 재고 조회
-    → 재고 >= 주문 수량 ?
-         Yes → order.status = CONFIRMED
-               SampleRepository.decreaseStock(sampleId, quantity)
-         No  → shortage = quantity - stock
-               job = ProductionJob{ shortage, actualQuantity = ceil(shortage/yield), ... }
-               ProductionQueue.enqueue(job)
-               order.status = PRODUCING
-    → OrderRepository.save(order)  // 영속화
+    → OrderRepository.Approve(sampleRepo, productionQueue, orderId)
+         내부적으로:
+         - orderId 조회 및 RESERVED 검증 (아니면 false 반환, 상태 불변)
+         - SampleRepository.FindById(order.sampleId)로 재고 조회
+         - 재고 >= 주문 수량 ?
+              Yes → SampleRepository.DecreaseStock(sampleId, quantity)
+                    order.status = CONFIRMED
+              No  → shortage = quantity - stock
+                    SampleRepository.DecreaseStock(sampleId, stock)  // 기존 재고 전량 소진
+                    job = ProductionJob{ shortage, actualQuantity = ceil(shortage/yield),
+                                          totalTimeMin = avgProductionTimeMin * actualQuantity }
+                    ProductionQueue.Enqueue(job)
+                    order.status = PRODUCING
 
 [ProductionController.Tick() / CompleteCurrentJob()]
     → ProductionQueue.front() 처리 완료 시
@@ -184,7 +187,7 @@ SampleOrderSystem/
       Sample.h                 // plain data struct, no .cpp needed
       Order.h                  // plain data struct, no .cpp needed
       OrderStatus.h
-      ProductionJob.h / .cpp
+      ProductionJob.h           // plain data struct, no .cpp needed
       ProductionQueue.h / .cpp
       SampleRepository.h / .cpp
       OrderRepository.h / .cpp

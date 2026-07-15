@@ -3,9 +3,13 @@
 #include <algorithm>
 #include <cctype>
 #include <chrono>
+#include <cmath>
 #include <cstdio>
 #include <cstdlib>
 #include <ctime>
+
+#include "ProductionJob.h"
+#include "ProductionQueue.h"
 
 namespace {
 
@@ -87,6 +91,61 @@ bool OrderRepository::Register(const SampleRepository& sampleRepo, const std::st
 
 std::vector<Order> OrderRepository::FindAll() const {
     return orders_;
+}
+
+std::vector<Order> OrderRepository::FindByStatus(OrderStatus status) const {
+    std::vector<Order> results;
+    for (const auto& order : orders_) {
+        if (order.status == status) {
+            results.push_back(order);
+        }
+    }
+    return results;
+}
+
+bool OrderRepository::Approve(SampleRepository& sampleRepo, ProductionQueue& queue,
+                               const std::string& orderId) {
+    const auto it = std::find_if(orders_.begin(), orders_.end(),
+        [&orderId](const Order& order) { return order.orderId == orderId; });
+    if (it == orders_.end() || it->status != OrderStatus::RESERVED) {
+        return false;
+    }
+
+    Sample sample;
+    if (!sampleRepo.FindById(it->sampleId, sample)) {
+        return false;
+    }
+
+    if (sample.stock >= it->quantity) {
+        sampleRepo.DecreaseStock(it->sampleId, it->quantity);
+        it->status = OrderStatus::CONFIRMED;
+        return true;
+    }
+
+    const int shortage = it->quantity - sample.stock;
+    sampleRepo.DecreaseStock(it->sampleId, sample.stock);
+
+    ProductionJob job;
+    job.orderId = it->orderId;
+    job.sampleId = it->sampleId;
+    job.shortage = shortage;
+    job.actualQuantity = static_cast<int>(std::ceil(shortage / sample.yield));
+    job.totalTimeMin = sample.avgProductionTimeMin * job.actualQuantity;
+    queue.Enqueue(job);
+
+    it->status = OrderStatus::PRODUCING;
+    return true;
+}
+
+bool OrderRepository::Reject(const std::string& orderId) {
+    const auto it = std::find_if(orders_.begin(), orders_.end(),
+        [&orderId](const Order& order) { return order.orderId == orderId; });
+    if (it == orders_.end() || it->status != OrderStatus::RESERVED) {
+        return false;
+    }
+
+    it->status = OrderStatus::REJECTED;
+    return true;
 }
 
 JsonValue OrderRepository::ToJson() const {
