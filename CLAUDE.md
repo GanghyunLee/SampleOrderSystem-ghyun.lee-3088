@@ -13,23 +13,29 @@
 - 설계 아키텍처: [`docs/architecture.md`](docs/architecture.md)
 - 과제 출처: `[CRA_AI] Day3_개인과제_반도체시료관리.pdf` (4~23페이지 = Chapter 01 개인과제 개요, Chapter 02 기능 명세)
 
-이 저장소는 "[미션2] 프로젝트 개발" 산출물이며, 아래 PoC 저장소에서 검증한 구조를 그대로 계승합니다.
+이 저장소는 "[미션2] 프로젝트 개발" 산출물이며, 아래 PoC 저장소에서 검증한 구조/패턴을 **참고**하여 새로 작성합니다.
 
 ## 관련 PoC 저장소
 
-미션1에서 개별 저장소로 검증된 PoC들을 이 프로젝트에 통합/재사용합니다. 각 PoC는 C++20 콘솔 앱이며
-Visual Studio `.slnx` 솔루션 구조를 따릅니다.
+미션1에서 개별 저장소로 검증된 PoC들은 **설계 참고 자료일 뿐**이다. 각 PoC는 C++20 콘솔 앱이며
+Visual Studio `.slnx` 솔루션 구조를 따른다.
 
 | PoC 항목 | 저장소 | 이 프로젝트에서의 역할 |
 |---|---|---|
-| MVC 스켈레톤 코드 | [ConsoleMVC-ghyun.lee-3088](https://github.com/GanghyunLee/ConsoleMVC-ghyun.lee-3088) | Model/View/Controller 패키지 구조 및 메뉴 루프 패턴의 베이스 |
-| 데이터 영속성 처리 | [DataPersistence-ghyun.lee-3088](https://github.com/GanghyunLee/DataPersistence-ghyun.lee-3088) | JSON 파싱(`JsonParser`/`JsonValue`) 및 저장/로드(`SaveManager`) 패턴 |
-| 데이터 모니터링 Tool | [DataMonitor-ghyun.lee-3088](https://github.com/GanghyunLee/DataMonitor-ghyun.lee-3088) | 저장된 주문 데이터를 조회하는 `OrderRepository` 패턴 |
-| Dummy 데이터 생성 Tool | [DummyDataGenerator-ghyun.lee-3088](https://github.com/GanghyunLee/DummyDataGenerator-ghyun.lee-3088) | 테스트용 더미 주문 데이터 생성(`OrderGenerator`) 패턴 |
+| MVC 스켈레톤 코드 | [ConsoleMVC-ghyun.lee-3088](https://github.com/GanghyunLee/ConsoleMVC-ghyun.lee-3088) | Model/View/Controller 패키지 구조 및 메뉴 루프 패턴 참고 |
+| 데이터 영속성 처리 | [DataPersistence-ghyun.lee-3088](https://github.com/GanghyunLee/DataPersistence-ghyun.lee-3088) | JSON 파싱(`JsonParser`/`JsonValue`) 및 저장/로드(`SaveManager`) 패턴 참고 |
+| 데이터 모니터링 Tool | [DataMonitor-ghyun.lee-3088](https://github.com/GanghyunLee/DataMonitor-ghyun.lee-3088) | 저장된 주문 데이터를 조회하는 `OrderRepository` 패턴 참고 |
+| Dummy 데이터 생성 Tool | [DummyDataGenerator-ghyun.lee-3088](https://github.com/GanghyunLee/DummyDataGenerator-ghyun.lee-3088) | 테스트용 더미 주문 데이터 생성(`OrderGenerator`) 패턴 참고 |
 
-> 주의: PoC들의 `OrderData`/`DummyOrder`는 `status`를 단순 문자열(`"Received"` 등)로 표현하는 단순화된 예시입니다.
-> 본 프로젝트에서는 `docs/PRD.md`에 정의된 5가지 상태(`RESERVED/REJECTED/PRODUCING/CONFIRMED/RELEASE`)를
-> 정식 도메인 모델로 사용해야 하며, PoC의 필드명을 그대로 베끼지 않습니다.
+> **PoC는 참조(reference)로만 사용하며, 이 프로젝트가 PoC 저장소에 의존성을 가져서는 안 된다.**
+> - Git submodule/subtree, NuGet/vcpkg 패키지 참조, `.vcxproj`의 외부 프로젝트 참조(Project Reference),
+>   상대경로 `#include`로 다른 저장소를 직접 가리키는 방식 등 **PoC 저장소를 빌드/실행 시점에 참조하는
+>   모든 형태를 금지**한다.
+> - 재사용할 코드(예: `JsonValue`/`JsonParser`)는 PoC의 코드를 참고하여 이 저장소 안에 **직접 새로 작성/이식**한다.
+>   이식한 이후에는 이 저장소의 코드가 정본(source of truth)이며, PoC 쪽 변경을 추적/동기화할 필요가 없다.
+> - PoC들의 `OrderData`/`DummyOrder`는 `status`를 단순 문자열(`"Received"` 등)로 표현하는 단순화된 예시일 뿐이다.
+>   본 프로젝트에서는 `docs/PRD.md`에 정의된 5가지 상태(`RESERVED/REJECTED/PRODUCING/CONFIRMED/RELEASE`)를
+>   정식 도메인 모델로 사용해야 하며, PoC의 필드명을 그대로 베끼지 않는다.
 
 ## 기술 스택
 
