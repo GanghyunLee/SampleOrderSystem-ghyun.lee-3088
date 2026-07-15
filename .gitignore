@@ -11,3 +11,6 @@
 *.log
 *.user
 *.sqlite
+
+# vcpkg manifest-mode local package cache (regenerated via `vcpkg install` / MSBuild).
+vcpkg_installed/
