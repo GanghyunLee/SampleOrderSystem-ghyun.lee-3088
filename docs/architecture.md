@@ -163,14 +163,23 @@ CONFIRMED --(출고 처리)--------> RELEASE
 - `DummyDataGenerator` PoC로 생성한 더미 주문 데이터도 동일 스키마(JSON)로 적재 가능해야 한다.
 - `DataMonitor` PoC는 이 JSON 저장소를 별도 프로세스에서 읽기 전용으로 조회하는 도구로,
   저장 포맷을 변경할 때는 `DataMonitor`/`DummyDataGenerator`와의 스키마 호환성도 함께 검토한다.
+- `SaveManager::Save`는 대상 파일의 상위 디렉터리(`data/` 등)가 아직 없으면 자동으로 생성한 뒤 저장한다
+  (최초 실행 시 `data/` 디렉터리가 없어 저장이 실패하는 것을 방지하기 위함). 상위 디렉터리 생성 자체가
+  실패하는 경우(권한 문제 등)에만 `false`를 반환한다.
+- JSON 문자열 값의 `\uXXXX` 유니코드 이스케이프는 손실 없이 파싱/직렬화되어야 한다 (한글 고객명 등 비ASCII
+  문자를 담는 필드가 있으므로 정확한 왕복이 필요하다).
 
 ## 7. 디렉터리 구조 (제안)
 
 ```
 SampleOrderSystem/
   SampleOrderSystem.slnx
+  vcpkg.json                   // vcpkg manifest 모드 (GoogleTest 의존성 선언, §9 참고)
   SampleOrderSystem/
     main.cpp
+    Tests/
+      SampleOrderSystem.Tests.vcxproj  // 테스트 전용 프로젝트, 솔루션에 별도 등록
+      *Test.cpp
     Model/
       Sample.h / .cpp
       Order.h / .cpp
@@ -211,9 +220,10 @@ SampleOrderSystem/
 
 ## 9. 테스트 전략
 
-테스트 프레임워크는 **GoogleTest**를 사용한다 (커스텀 assert 러너를 직접 만들지 않는다). 솔루션에 GoogleTest를
-도입하는 구체적 방식(vcpkg manifest 또는 NuGet 패키지 등)은 0단계(기반 공사)에서 결정하며, 결정 시 이 섹션에
-반영한다.
+테스트 프레임워크는 **GoogleTest**를 사용한다 (커스텀 assert 러너를 직접 만들지 않는다). 0단계(기반 공사)에서
+도입 방식을 다음과 같이 확정했다: 저장소 루트의 `vcpkg.json`(vcpkg manifest 모드)으로 `gtest` 의존성을
+선언하고, 테스트 코드는 별도 프로젝트(`SampleOrderSystem/SampleOrderSystem/Tests/SampleOrderSystem.Tests.vcxproj`)로
+분리하여 `SampleOrderSystem.slnx`에 추가한다.
 
 핵심 로직은 Model 계층에 격리되어 있으므로 콘솔 입출력 없이 단위 테스트 가능해야 한다. 최소 커버 대상:
 
