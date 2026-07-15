@@ -7,7 +7,23 @@
 > **이 문서는 살아있는 문서(Living Document)다.** 구조/모델/저장 방식에 변경이 생기면 코드 변경과
 > 같은 커밋(또는 바로 다음 커밋)에서 이 문서를 함께 갱신한다. 규칙은 [`CLAUDE.md`](../CLAUDE.md) 참고.
 
-## 1. 레이어 구조 (MVC)
+## 1. 기술 스택
+
+| 구분 | 내용 |
+|---|---|
+| 언어 | C++20 (`stdcpp20`) |
+| 빌드 도구 | Visual Studio 2022 이상, MSBuild |
+| 솔루션 형식 | `SampleOrderSystem.slnx` |
+| 실행 형태 | 콘솔 애플리케이션 (메뉴 번호 입력 방식) |
+| 데이터 저장 | 파일 기반 JSON 영속성 (`DataPersistence` PoC 구조 이식, §6 참고) |
+| 아키텍처 패턴 | MVC (Model/View/Controller 계층 분리, `ConsoleMVC` PoC 구조 참고) |
+
+```
+msbuild SampleOrderSystem.slnx /p:Configuration=Debug /p:Platform=x64
+msbuild SampleOrderSystem.slnx /p:Configuration=Release /p:Platform=x64
+```
+
+## 2. 레이어 구조 (MVC)
 
 `ConsoleMVC` PoC의 구조를 계승하여 3계층으로 분리한다.
 
@@ -47,9 +63,9 @@ Model (도메인 엔티티 + 상태 전이/계산 규칙 + Repository)
 - 에러는 예외(exception)가 아니라 **성공/실패를 나타내는 반환값(bool 또는 Result 타입)** 으로 표현한다
   (`ConsoleMVC` PoC의 관례를 계승). View는 실패 시 안내 메시지를 출력하고 재입력을 유도한다.
 
-## 2. 도메인 모델
+## 3. 도메인 모델
 
-### 2.1 Sample (시료)
+### 3.1 Sample (시료)
 
 ```cpp
 struct Sample {
@@ -61,7 +77,7 @@ struct Sample {
 };
 ```
 
-### 2.2 Order (주문)
+### 3.2 Order (주문)
 
 ```cpp
 enum class OrderStatus { RESERVED, REJECTED, PRODUCING, CONFIRMED, RELEASE };
@@ -76,7 +92,7 @@ struct Order {
 };
 ```
 
-### 2.3 ProductionJob (생산 큐 항목)
+### 3.3 ProductionJob (생산 큐 항목)
 
 ```cpp
 struct ProductionJob {
@@ -93,7 +109,7 @@ struct ProductionJob {
 - 생산 완료 처리 시 해당 `Order.status`를 `PRODUCING → CONFIRMED`로 변경하고, 초과 생산분(수율 보정으로 인한
   잉여)은 `Sample.stock`에 더한다.
 
-## 3. 상태 전이 (Order.status)
+## 4. 상태 전이 (Order.status)
 
 ```
 RESERVED --(승인, 재고 충분)--> CONFIRMED
@@ -108,7 +124,7 @@ CONFIRMED --(출고 처리)--------> RELEASE
 반환한다. 자세한 규칙은 [`docs/FEATURES/04-order-approval-rejection.md`](FEATURES/04-order-approval-rejection.md),
 [`docs/FEATURES/07-shipping.md`](FEATURES/07-shipping.md) 참고.
 
-## 4. 데이터 흐름 예시 (주문 승인 → 생산 → 출고)
+## 5. 데이터 흐름 예시 (주문 승인 → 생산 → 출고)
 
 ```
 [OrderController.Approve(orderId)]
@@ -136,7 +152,7 @@ CONFIRMED --(출고 처리)--------> RELEASE
     → OrderRepository.save(order)
 ```
 
-## 5. 데이터 영속성
+## 6. 데이터 영속성
 
 `DataPersistence` PoC의 구조(`JsonValue`, `JsonParser`, `SaveManager`)를 재사용/확장한다.
 
@@ -148,7 +164,7 @@ CONFIRMED --(출고 처리)--------> RELEASE
 - `DataMonitor` PoC는 이 JSON 저장소를 별도 프로세스에서 읽기 전용으로 조회하는 도구로,
   저장 포맷을 변경할 때는 `DataMonitor`/`DummyDataGenerator`와의 스키마 호환성도 함께 검토한다.
 
-## 6. 디렉터리 구조 (제안)
+## 7. 디렉터리 구조 (제안)
 
 ```
 SampleOrderSystem/
@@ -187,13 +203,13 @@ SampleOrderSystem/
 > 위 구조는 제안이며, 실제 구현 시 파일 분할 수준은 조정 가능하다. 다만 Model/View/Controller 폴더 분리
 > 자체는 유지한다.
 
-## 7. 동시성/실행 모델
+## 8. 동시성/실행 모델
 
 - 단일 스레드, 동기 콘솔 애플리케이션. 생산 진행은 실시간 타이머가 아니라 사용자가 "생산 라인 조회"
   또는 "틱 진행" 등의 명령을 실행할 때 계산/갱신하는 방식으로 단순화한다 (실제 초단위 타이머 불필요).
 - 생산 라인은 단일 라인(순차 처리)만 지원한다. 다중 라인 확장은 범위 밖([`docs/PRD.md`](PRD.md) §9 참고).
 
-## 8. 테스트 전략
+## 9. 테스트 전략
 
 핵심 로직은 Model 계층에 격리되어 있으므로 콘솔 입출력 없이 단위 테스트 가능해야 한다. 최소 커버 대상:
 
@@ -204,7 +220,7 @@ SampleOrderSystem/
 - 모니터링 재고 상태 분류(여유/부족/고갈) 임계값 로직
 - JSON 저장/로드 왕복(round-trip) 시 데이터 무손실
 
-## 9. 변경 이력 관리
+## 10. 변경 이력 관리
 
 - 도메인 모델 필드 추가/변경, 상태 전이 규칙 변경, 저장 포맷 변경, 디렉터리 구조 변경 시 이 문서를 갱신한다.
 - 큰 구조 변경은 `docs/superpowers/plans` 또는 `docs/superpowers/specs`에 설계 노트를 남긴 뒤, 확정된 내용만
