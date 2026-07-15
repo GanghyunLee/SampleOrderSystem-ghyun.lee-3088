@@ -143,7 +143,17 @@
     </Manifest>
   </ItemDefinitionGroup>
 
-  <ItemGroup></ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="SampleOrderSystem\main.cpp" />
+    <ClCompile Include="SampleOrderSystem\Model\JsonValue.cpp" />
+    <ClCompile Include="SampleOrderSystem\Model\JsonParser.cpp" />
+    <ClCompile Include="SampleOrderSystem\Model\SaveManager.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="SampleOrderSystem\Model\JsonValue.h" />
+    <ClInclude Include="SampleOrderSystem\Model\JsonParser.h" />
+    <ClInclude Include="SampleOrderSystem\Model\SaveManager.h" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

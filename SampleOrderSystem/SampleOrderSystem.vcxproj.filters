@@ -13,5 +13,33 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Model">
+      <UniqueIdentifier>{6b6c9b1a-8a2e-4f2a-9a1e-8f9b1c2d3e4a}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="SampleOrderSystem\main.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="SampleOrderSystem\Model\JsonValue.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="SampleOrderSystem\Model\JsonParser.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="SampleOrderSystem\Model\SaveManager.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="SampleOrderSystem\Model\JsonValue.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="SampleOrderSystem\Model\JsonParser.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="SampleOrderSystem\Model\SaveManager.h">
+      <Filter>Model</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
