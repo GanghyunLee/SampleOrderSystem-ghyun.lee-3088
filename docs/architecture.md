@@ -181,7 +181,7 @@ SampleOrderSystem/
       SampleOrderSystem.Tests.vcxproj  // 테스트 전용 프로젝트, 솔루션에 별도 등록
       *Test.cpp
     Model/
-      Sample.h / .cpp
+      Sample.h                 // plain data struct, no .cpp needed
       Order.h / .cpp
       OrderStatus.h
       ProductionJob.h / .cpp
