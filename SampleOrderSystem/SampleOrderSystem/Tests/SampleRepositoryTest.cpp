@@ -16,6 +16,20 @@
 //     validation per FEATURES doc line 47).
 //  9. Registering a sample with an empty name is rejected (required-field
 //     validation per FEATURES doc line 47).
+// 10. FindById returns true and the matching sample when the id exists
+//     (direct unit test for docs/FEATURES/04-order-approval-rejection.md's
+//     reliance on SampleRepository::FindById; docs/architecture.md section
+//     3.1).
+// 11. FindById returns false when the id does not exist.
+// 12. AddStock increases the stock of the sample with the given id
+//     (direct unit test; docs/FEATURES/04-order-approval-rejection.md line
+//     20, "해당 수량만큼 재고를 차감" implies the counterpart stock-increase
+//     primitive must behave correctly in isolation).
+// 13. DecreaseStock reduces the stock of the sample with the given id by
+//     the requested quantity under normal (sufficient-stock) conditions.
+// 14. DecreaseStock clamps stock at 0 (never negative) when the requested
+//     quantity exceeds the current stock (docs/architecture.md section 3.1,
+//     "DecreaseStock never takes stock below 0").
 //
 // Note: sample names below are plain ASCII on purpose (not the Korean
 // example names from the FEATURES doc) so this file's meaning does not
@@ -154,4 +168,57 @@ TEST(SampleRepository, RegisterWithEmptyNameReturnsFalse) {
     SampleRepository repo;
 
     EXPECT_FALSE(repo.Register(MakeSample("S-001", "", 0.5, 0.92)));
+}
+
+TEST(SampleRepository, FindByIdReturnsTrueAndMatchingSampleWhenIdExists) {
+    SampleRepository repo;
+    repo.Register(MakeSample("S-001", "Silicon Wafer 8-inch", 0.5, 0.92));
+
+    Sample outSample;
+    ASSERT_TRUE(repo.FindById("S-001", outSample));
+    EXPECT_EQ(outSample.id, "S-001");
+    EXPECT_EQ(outSample.name, "Silicon Wafer 8-inch");
+}
+
+TEST(SampleRepository, FindByIdReturnsFalseWhenIdDoesNotExist) {
+    SampleRepository repo;
+    repo.Register(MakeSample("S-001", "Silicon Wafer 8-inch", 0.5, 0.92));
+
+    Sample outSample;
+    EXPECT_FALSE(repo.FindById("S-NO-SUCH-ID", outSample));
+}
+
+TEST(SampleRepository, AddStockIncreasesStockForExistingSample) {
+    SampleRepository repo;
+    repo.Register(MakeSample("S-001", "Silicon Wafer 8-inch", 0.5, 0.92));
+
+    ASSERT_TRUE(repo.AddStock("S-001", 50));
+
+    Sample outSample;
+    ASSERT_TRUE(repo.FindById("S-001", outSample));
+    EXPECT_EQ(outSample.stock, 50);
+}
+
+TEST(SampleRepository, DecreaseStockReducesStockByRequestedQuantity) {
+    SampleRepository repo;
+    repo.Register(MakeSample("S-001", "Silicon Wafer 8-inch", 0.5, 0.92));
+    repo.AddStock("S-001", 100);
+
+    ASSERT_TRUE(repo.DecreaseStock("S-001", 30));
+
+    Sample outSample;
+    ASSERT_TRUE(repo.FindById("S-001", outSample));
+    EXPECT_EQ(outSample.stock, 70);
+}
+
+TEST(SampleRepository, DecreaseStockClampsAtZeroWhenQuantityExceedsCurrentStock) {
+    SampleRepository repo;
+    repo.Register(MakeSample("S-001", "Silicon Wafer 8-inch", 0.5, 0.92));
+    repo.AddStock("S-001", 20);
+
+    repo.DecreaseStock("S-001", 50);
+
+    Sample outSample;
+    ASSERT_TRUE(repo.FindById("S-001", outSample));
+    EXPECT_EQ(outSample.stock, 0);
 }
