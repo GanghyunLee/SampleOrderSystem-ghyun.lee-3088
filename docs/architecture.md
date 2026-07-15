@@ -182,7 +182,7 @@ SampleOrderSystem/
       *Test.cpp
     Model/
       Sample.h                 // plain data struct, no .cpp needed
-      Order.h / .cpp
+      Order.h                  // plain data struct, no .cpp needed
       OrderStatus.h
       ProductionJob.h / .cpp
       ProductionQueue.h / .cpp
@@ -233,6 +233,9 @@ SampleOrderSystem/
 - 생산 큐 FIFO 순서 보장
 - 모니터링 재고 상태 분류(여유/부족/고갈) 임계값 로직
 - JSON 저장/로드 왕복(round-trip) 시 데이터 무손실
+- 주문 채번(`ORD-YYYYMMDD-NNNN`) 규칙: 알려진 제한사항으로, 날짜가 바뀔 때 순번이 0001로 재시작되는지와
+  당일 주문이 여러 건일 때 최대 순번을 정확히 복원하는지는 코드 검토로는 타당해 보이나 아직 자동화
+  테스트로 증명되지 않았다.
 
 ## 10. 변경 이력 관리
 
