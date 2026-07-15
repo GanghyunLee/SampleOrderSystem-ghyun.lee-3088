@@ -76,6 +76,20 @@ msbuild SampleOrderSystem.slnx /p:Configuration=Release /p:Platform=x64
 - 구현 계획, 설계 노트 등은 필요 시 `docs/superpowers/plans`, `docs/superpowers/specs` 하위에 축적 (PoC 저장소들과 동일한 관례).
   큰 구조 변경은 먼저 여기에 설계 노트를 남기고, 확정된 내용만 `docs/architecture.md`에 반영한다.
 
+## 기능 구현 파이프라인 (서브에이전트 로스터)
+
+`docs/FEATURES/`의 각 기능을 구현할 때는 아래 5개 프로젝트 전용 서브에이전트(`.claude/agents/`)를 이 순서로
+사용한다. 설계 근거는 [`docs/superpowers/specs/2026-07-15-agent-architecture-design.md`](docs/superpowers/specs/2026-07-15-agent-architecture-design.md) 참고.
+
+1. **`test-writer`** — 대상 FEATURES 파일 + PRD만 보고 실패하는(red) 테스트를 먼저 작성. 프로덕션 코드는 쓰지 않음.
+2. **`implementer`** — 테스트를 건드리지 않고 통과(green)시키는 Model/View/Controller 코드 작성.
+3. **`spec-verifier`**와 **`reviewer`** — 서로 독립적으로(서로의 결론을 참조하지 않고) 병렬 실행.
+   `spec-verifier`는 테스트가 스펙을 실제로 증명하는지 회의적으로 재검증하고, `reviewer`는 클린코드/계층분리/
+   PoC 무의존성 규칙 준수를 점검한다.
+4. **`docs-sync`** — 위 두 검증을 통과한 뒤, `docs/architecture.md`가 실제 구현과 어긋났으면 최소 수정.
+
+반려(2회까지 자동 반복 후 초과 시 사용자에게 보고)와 세부 규칙은 설계 스펙 3절을 따른다.
+
 ## 테스트 & 커밋
 
 - 상태 전이(RESERVED→CONFIRMED/PRODUCING, PRODUCING→CONFIRMED, CONFIRMED→RELEASE, 거절→REJECTED), 재고 계산,
