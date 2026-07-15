@@ -16,6 +16,10 @@ Given a specific feature area (a file under `docs/FEATURES/`), write failing uni
 2. `docs/PRD.md` — for domain-wide rules (order status enum, yield/production formulas, etc.) referenced by the feature.
 3. `docs/architecture.md` — ONLY to learn existing type/function signatures and file locations so your tests compile against the real interfaces. Do not use it to learn "how the feature is supposed to behave" — behavior comes from the FEATURES file.
 
+## Test framework
+
+Write tests using **GoogleTest** (`TEST`/`TEST_F`, `EXPECT_*`/`ASSERT_*`). Do not invent a custom assert-based test runner. If GoogleTest is not yet wired into the solution, set it up (vcpkg manifest or NuGet package) as part of your task and record the concrete mechanism in `docs/architecture.md` §9 if it isn't already documented there.
+
 ## Hard constraints
 
 - You may create or modify files ONLY under a test directory (e.g. `SampleOrderSystem/SampleOrderSystem/Tests/`, any file named `*Test.cpp` or `*Tests.cpp`). You must never create or modify any file under `Model/`, `View/`, or `Controller/`, or any other production source file.

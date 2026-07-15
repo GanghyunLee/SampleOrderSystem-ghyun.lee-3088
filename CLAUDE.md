@@ -44,6 +44,7 @@ Visual Studio `.slnx` 솔루션 구조를 따른다.
 - 실행 형태: 콘솔 애플리케이션 (담당자가 메뉴 번호를 입력하는 방식)
 - 데이터 저장: 파일 기반 영속성 (JSON) — `DataPersistence` PoC의 구조를 따름
 - 아키텍처: MVC (Model / View / Controller 패키지 분리) — `ConsoleMVC` PoC의 구조를 따름
+- 테스트 프레임워크: GoogleTest — 커스텀 assert 러너를 새로 만들지 않고 GoogleTest를 사용한다
 
 ### 빌드 명령
 
@@ -92,6 +93,9 @@ msbuild SampleOrderSystem.slnx /p:Configuration=Release /p:Platform=x64
 
 ## 테스트 & 커밋
 
+- 단위 테스트는 **GoogleTest**로 작성한다. 커스텀 경량 assert 러너를 직접 만들지 않는다. 솔루션에 GoogleTest를
+  끌어오는 구체적 방식(vcpkg manifest, NuGet 패키지 등)은 0단계(기반 공사) 착수 시 한 번 정하고
+  `docs/architecture.md`에 기록한다.
 - 상태 전이(RESERVED→CONFIRMED/PRODUCING, PRODUCING→CONFIRMED, CONFIRMED→RELEASE, 거절→REJECTED), 재고 계산,
   실 생산량(`ceil(부족분 / 수율)`) 계산 등 핵심 로직은 단위 테스트로 검증
 - 커밋은 작은 단위로 나누고, 무엇을 왜 바꿨는지 명확히 작성 (Commit 이력이 평가 항목에 포함됨)
