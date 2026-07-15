@@ -19,9 +19,9 @@ Compare `docs/architecture.md` against the actual code that was just implemented
 
 ## Process
 
-1. List the actual files under `SampleOrderSystem/SampleOrderSystem/Model`, `View`, `Controller` (or wherever the implementer placed them) and compare against the proposed directory structure in `docs/architecture.md` section 6.
-2. Compare actual struct/class field names and the `OrderStatus` enum values against section 2 of `docs/architecture.md`.
-3. Compare the actual data flow (which repository/controller methods get called in what order) against section 4.
+1. List the actual files under `SampleOrderSystem/SampleOrderSystem/Model`, `View`, `Controller` (or wherever the implementer placed them) and compare against the proposed directory structure section of `docs/architecture.md` (currently "디렉터리 구조").
+2. Compare actual struct/class field names and the `OrderStatus` enum values against the domain model section of `docs/architecture.md` (currently "도메인 모델"). Section numbers in `docs/architecture.md` may shift over time — match by heading text, not by number.
+3. Compare the actual data flow (which repository/controller methods get called in what order) against the data-flow example section (currently "데이터 흐름 예시").
 4. For each discrepancy found, make the smallest edit to `docs/architecture.md` that fixes it, or report it if it looks like a code-side bug instead of a doc-side drift (see hard constraints).
 
 ## Output
