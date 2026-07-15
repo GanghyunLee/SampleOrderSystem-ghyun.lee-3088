@@ -37,24 +37,6 @@ Visual Studio `.slnx` 솔루션 구조를 따른다.
 >   본 프로젝트에서는 `docs/PRD.md`에 정의된 5가지 상태(`RESERVED/REJECTED/PRODUCING/CONFIRMED/RELEASE`)를
 >   정식 도메인 모델로 사용해야 하며, PoC의 필드명을 그대로 베끼지 않는다.
 
-## 기술 스택
-
-- 언어: C++20 (`stdcpp20`)
-- 빌드: Visual Studio 2022 이상, MSBuild, 솔루션 파일 `SampleOrderSystem.slnx`
-- 실행 형태: 콘솔 애플리케이션 (담당자가 메뉴 번호를 입력하는 방식)
-- 데이터 저장: 파일 기반 영속성 (JSON) — `DataPersistence` PoC의 구조를 따름
-- 아키텍처: MVC (Model / View / Controller 패키지 분리) — `ConsoleMVC` PoC의 구조를 따름
-- 테스트 프레임워크: GoogleTest — 커스텀 assert 러너를 새로 만들지 않고 GoogleTest를 사용한다
-
-### 빌드 명령
-
-```
-msbuild SampleOrderSystem.slnx /p:Configuration=Debug /p:Platform=x64
-msbuild SampleOrderSystem.slnx /p:Configuration=Release /p:Platform=x64
-```
-
-또는 Visual Studio에서 `SampleOrderSystem.slnx`를 열어 빌드합니다.
-
 ## 아키텍처 원칙
 
 **작업을 시작하기 전에 항상 [`docs/architecture.md`](docs/architecture.md)를 먼저 참조한다.** 레이어 구조,
