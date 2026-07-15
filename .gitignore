@@ -1,0 +1,13 @@
+# Visual Studio / C++ build artifacts and IDE caches.
+.vs/
+[Dd]ebug/
+[Rr]elease/
+[Xx]64/
+[Xx]86/
+*.obj
+*.exe
+*.pdb
+*.ilk
+*.log
+*.user
+*.sqlite
