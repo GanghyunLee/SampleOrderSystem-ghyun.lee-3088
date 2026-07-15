@@ -36,6 +36,9 @@
     <ClCompile Include="SampleOrderSystem\Model\OrderRepository.cpp">
       <Filter>Model</Filter>
     </ClCompile>
+    <ClCompile Include="SampleOrderSystem\Model\ProductionQueue.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SampleOrderSystem\Model\JsonValue.h">
@@ -60,6 +63,12 @@
       <Filter>Model</Filter>
     </ClInclude>
     <ClInclude Include="SampleOrderSystem\Model\OrderRepository.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="SampleOrderSystem\Model\ProductionJob.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="SampleOrderSystem\Model\ProductionQueue.h">
       <Filter>Model</Filter>
     </ClInclude>
   </ItemGroup>

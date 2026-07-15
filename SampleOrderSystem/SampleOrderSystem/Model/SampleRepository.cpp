@@ -35,3 +35,33 @@ std::vector<Sample> SampleRepository::SearchByName(const std::string& keyword) c
     }
     return results;
 }
+
+bool SampleRepository::FindById(const std::string& id, Sample& outSample) const {
+    const auto it = std::find_if(samples_.begin(), samples_.end(),
+        [&id](const Sample& sample) { return sample.id == id; });
+    if (it == samples_.end()) {
+        return false;
+    }
+    outSample = *it;
+    return true;
+}
+
+bool SampleRepository::AddStock(const std::string& id, int quantity) {
+    const auto it = std::find_if(samples_.begin(), samples_.end(),
+        [&id](const Sample& sample) { return sample.id == id; });
+    if (it == samples_.end()) {
+        return false;
+    }
+    it->stock += quantity;
+    return true;
+}
+
+bool SampleRepository::DecreaseStock(const std::string& id, int quantity) {
+    const auto it = std::find_if(samples_.begin(), samples_.end(),
+        [&id](const Sample& sample) { return sample.id == id; });
+    if (it == samples_.end()) {
+        return false;
+    }
+    it->stock = (quantity < it->stock) ? it->stock - quantity : 0;
+    return true;
+}

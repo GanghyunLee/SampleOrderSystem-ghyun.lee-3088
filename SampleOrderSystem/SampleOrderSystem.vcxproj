@@ -150,6 +150,7 @@
     <ClCompile Include="SampleOrderSystem\Model\SaveManager.cpp" />
     <ClCompile Include="SampleOrderSystem\Model\SampleRepository.cpp" />
     <ClCompile Include="SampleOrderSystem\Model\OrderRepository.cpp" />
+    <ClCompile Include="SampleOrderSystem\Model\ProductionQueue.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SampleOrderSystem\Model\JsonValue.h" />
@@ -160,6 +161,8 @@
     <ClInclude Include="SampleOrderSystem\Model\OrderStatus.h" />
     <ClInclude Include="SampleOrderSystem\Model\Order.h" />
     <ClInclude Include="SampleOrderSystem\Model\OrderRepository.h" />
+    <ClInclude Include="SampleOrderSystem\Model\ProductionJob.h" />
+    <ClInclude Include="SampleOrderSystem\Model\ProductionQueue.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
